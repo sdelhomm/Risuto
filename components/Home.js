@@ -29,7 +29,7 @@ export default class Home extends React.Component {
 			if (value !== null)
 				return (value);
 			else {
-				return ('{"'+item+'":[],"nextId":1}');
+				return ('{"lists":[],"nextId":1,"favorites":[]}');
 			}
 		}
 		catch (error) {
@@ -37,11 +37,20 @@ export default class Home extends React.Component {
 		}
 	}
 
+	textLimiter(text, max) {
+		if (text.length > max) {
+			text = text.substr(0, max);
+			text = text + '...'
+			return (text);
+		}
+		return (text);
+	}
+
 	getLists () {
 		this.setState({
 			isReady: false
 		});
-		this.retrieveData('lists')
+		this.retrieveData('userData')
 		.then((dataString) => JSON.parse(dataString))
 		.then((dataObject) => {
 			if (dataObject.lists.length > 0) {
@@ -64,7 +73,7 @@ export default class Home extends React.Component {
 	}
 
 	delList (listId) {
-		this.retrieveData('lists')
+		this.retrieveData('userData')
 		.then((dataString) => JSON.parse(dataString))
 		.then((dataObject) => {
 			let toDel = dataObject.lists.findIndex((element) => element.id == listId );
@@ -75,7 +84,7 @@ export default class Home extends React.Component {
 					let toDel = dataObject.lists.findIndex((element) => element.id == listId );
 					dataObject.lists.splice(toDel, 1);
 					dataObject = JSON.stringify(dataObject);
-					this.storeData('lists', dataObject)
+					this.storeData('userData', dataObject)
 					.then(() => this.getLists());
 				} }
 				]);
@@ -105,7 +114,7 @@ export default class Home extends React.Component {
 						activeOpacity={0.7}
 						>
 							<View style={Style.listsHome.container} >
-								<Text style={Style.listsHome.name} >{item.name}</Text>
+								<Text style={Style.listsHome.name} >{this.textLimiter(item.name, 14)}</Text>
 								<TouchableOpacity
 								onPress={() => this.delList(item.id)}
 								activeOpacity={0.6}

@@ -25,8 +25,8 @@ export default Style = {
 	},
 	title: {
 		fontSize: 30,
-		marginVertical: 15,
-		color: red,
+		marginVertical: 10,
+		color: dark,
 		fontFamily: 'AvenirNext-Regular'
 	},
 	mediumText: {
@@ -115,7 +115,7 @@ export default Style = {
 			backgroundColor: '#28E42D',
 			marginRight: 10,
 			justifyContent: 'center',
-			alignItems: 'center', 
+			alignItems: 'center',
 			borderWidth: 2,
 			borderRadius: 50,
 			borderColor: '#14bc19'
@@ -148,11 +148,26 @@ export default Style = {
 			height: 200,
 		},
 		title: {
-			fontSize: 50,
+			fontSize: 40,
 			textAlign: 'center',
 			color: light,
-			marginVertical: 15,
+			marginVertical: 13,
 			fontFamily: 'AvenirNext-Regular'
+		},
+		voteSection: {
+			flex: 1,
+			width: '100%',
+			justifyContent: 'space-around',
+			alignItems: 'center',
+			flexDirection: 'row',
+			flexWrap: 'wrap',
+			marginVertical: 10
+		},
+		stars: {
+			justifyContent: 'center',
+			alignItems: 'center',
+			flexDirection: 'row',
+			flexWrap: 'wrap'
 		},
 		overview: {
 			fontFamily: 'Helvetica',
@@ -172,6 +187,7 @@ export default Style = {
 			flex: 1,
 			flexDirection: 'row',
 			alignItems: 'center',
+			flexWrap: 'wrap',
 			justifyContent: 'space-between',
 			backgroundColor: light,
 			borderRadius: 4,
@@ -190,7 +206,7 @@ export default Style = {
 			backgroundColor: redDel,
 			marginRight: 10,
 			justifyContent: 'center',
-			alignItems: 'center', 
+			alignItems: 'center',
 			borderWidth: 2,
 			borderRadius: 3,
 			borderColor: '#d3171d'

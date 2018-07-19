@@ -1,5 +1,6 @@
 import React from 'react'
 import { ScrollView, View, Text, Image, ImageBackground, ActivityIndicator, TouchableOpacity, AsyncStorage } from 'react-native'
+import Ionicons from 'react-native-vector-icons/Ionicons.js'
 import Style from '../style/Style.js'
 
 export default class MovieInfos extends React.Component {
@@ -9,7 +10,9 @@ export default class MovieInfos extends React.Component {
 	
 	  this.state = {
 	  	isReady: true,
-	  	movieData: null
+	  	movieData: null,
+	  	userData: null,
+	  	liked: null
 	  };
 	}
 
@@ -22,17 +25,23 @@ export default class MovieInfos extends React.Component {
 		.then( (responseJson) => {
 			if (responseJson !== undefined && responseJson !== null) {
 				this.setState({
-					isReady: true,
 					movieData: responseJson
 				});
 			}
 			else {
 				this.setState({
-					isReady: true,
 					movieData: 'none'
 				});
 			}
 		})
+		.then(() => this.retrieveData('userData'))
+		.then((dataString) => JSON.parse(dataString))
+		.then((dataObject) =>
+			this.setState({
+				isReady: true,
+				userData: dataObject
+			})
+		)
 		.catch((error) =>{
 			console.log(error);
 		});
@@ -53,7 +62,7 @@ export default class MovieInfos extends React.Component {
 			if (value !== null)
 				return (value);
 			else {
-				return ('{"'+item+'":[],"nextId":1}');
+				return ('{"lists":[],"nextId":1,"favorites":[]}');
 			}
 		}
 		catch (error) {
@@ -62,24 +71,25 @@ export default class MovieInfos extends React.Component {
 	}
 
 	delMovie (movieId, listId) {
-		this.retrieveData('lists')
-		.then((dataString) => JSON.parse(dataString))
-		.then((dataObject) => {
-			let listIndex = dataObject.lists.findIndex((element) => element.id == listId);
-			let movieIndex = dataObject.lists[listIndex].movies.findIndex((element) => element.id == movieId);
-			dataObject.lists[listIndex].movies.splice(movieIndex, 1);
-			dataObject = JSON.stringify(dataObject);
-			this.storeData('lists', dataObject);
-		})
-		.then(() => this.props.navigation.navigate('Home'))
-		.catch(() => alert('Impossible de supprimer ce film'));
+		try {
+			let listIndex = this.state.userData.lists.findIndex((element) => element.id == listId);
+			let movieIndex = this.state.userData.lists[listIndex].movies.findIndex((element) => element.id == movieId);
+			this.state.userData.lists[listIndex].movies.splice(movieIndex, 1);
+			this.state.userData = JSON.stringify(this.state.userData);
+			this.storeData('userData', this.state.userData)
+			.then(() => this.props.navigation.navigate('Home'));
+		}
+		catch(error) {
+			console.log(error);
+			alert('Impossible de supprimer ce film');
+		}
 	}
 
 	createButton () {
 		if (this.props.navigation.state.params.from == 'list') {
 			return (
 				<TouchableOpacity
-				onPress={() => this.delMovie (this.state.movieData.id, this.props.navigation.state.params.listId)}
+				onPress={() => this.delMovie(this.state.movieData.id, this.props.navigation.state.params.listId)}
 				activeOpacity={0.7}
 				style={Style.button} >
 					<Text style={Style.buttonText} >Supprimer de cette liste</Text>
@@ -92,6 +102,70 @@ export default class MovieInfos extends React.Component {
 			activeOpacity={0.7}
 			style={Style.button} >
 				<Text style={Style.buttonText} >Ajouter à une liste</Text>
+			</TouchableOpacity>
+		);
+	}
+
+	doLike () {
+		let index = this.state.userData.favorites.findIndex((element) => element == this.state.movieData.id);
+		if (index == -1) {
+			this.state.userData.favorites.push(this.state.movieData.id);
+			this.state.userData = JSON.stringify(this.state.userData);
+			this.storeData('userData', this.state.userData)
+			.then(() => this.setState({
+				userData: JSON.parse(this.state.userData)
+			}));
+		}
+		else {
+			this.state.userData.favorites.splice(index, 1);
+			this.state.userData = JSON.stringify(this.state.userData);
+			this.storeData('userData', this.state.userData)
+			.then(() => this.setState({
+				userData: JSON.parse(this.state.userData)
+			}));
+		}
+	}
+
+	voteCount() {
+		var jsx = [];
+		let vote = Math.ceil(this.state.movieData.vote_average);
+		for (let i = 2; i <= 10; i+= 2) {
+			if (vote - i >= 0) {
+				jsx.push(
+					<Ionicons key={i} name='ios-star' size={45} color='#129934' />
+				);
+			}
+			else if ((vote + 1) - i >= 0) {
+				jsx.push(
+					<Ionicons key={i} name='ios-star-half' size={45} color='#129934' />
+				);
+			}
+			else {
+				jsx.push(
+					<Ionicons key={i} name='ios-star-outline' size={45} color='#129934' />
+				);
+			}
+		}
+		return (jsx);
+	}
+
+	likeButton () {
+		if (this.state.userData.favorites.findIndex((element) => element == this.state.movieData.id) != -1) {
+			return(
+				<TouchableOpacity
+				onPress={() => this.doLike()}
+				activeOpacity={0.7}
+				>
+					<Ionicons name='ios-heart' size={45} color='#d81326' />
+				</TouchableOpacity>
+			);
+		}
+		return(
+			<TouchableOpacity
+			onPress={() => this.doLike()}
+			activeOpacity={0.7}
+			>
+			<Ionicons name='ios-heart-outline' size={45} color='#d81326' />
 			</TouchableOpacity>
 		);
 	}
@@ -120,6 +194,12 @@ export default class MovieInfos extends React.Component {
 						/>
 						<Text style={Style.movieInfos.title} >{this.state.movieData.title}</Text>
 						{this.createButton()}
+						<View style={Style.movieInfos.voteSection} >
+							{this.likeButton()}
+							<View style={Style.movieInfos.stars} >
+								{this.voteCount()}
+							</View>
+						</View>
 						<Text style={Style.movieInfos.overview} >{this.state.movieData.overview}</Text>
 					</View>
 				</ScrollView>

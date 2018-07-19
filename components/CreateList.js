@@ -27,7 +27,7 @@ export default class CreateList extends React.Component {
 			if (value !== null)
 				return (value);
 			else {
-				return ('{"'+item+'":[],"nextId":1}');
+				return ('{"lists":[],"nextId":1,"favorites":[]}');
 			}
 		}
 		catch (error) {
@@ -38,7 +38,7 @@ export default class CreateList extends React.Component {
 	saveList() {
 		let name = this.state.listName;
 		if (name !== undefined && name !== null && name.length > 0) {
-			this.retrieveData('lists')
+			this.retrieveData('userData')
 			.then((data) => {
 				data = JSON.parse(data);
 				let newList = {
@@ -49,7 +49,7 @@ export default class CreateList extends React.Component {
 				data.lists.unshift(newList);
 				data.nextId++;
 				data = JSON.stringify(data);
-				this.storeData('lists', data);
+				this.storeData('userData', data);
 			})
 			.then(() => {
 				this.props.navigation.navigate('Home');
@@ -64,7 +64,13 @@ export default class CreateList extends React.Component {
 	render () {
 		return (
 			<View style={Style.globalContainer} >
-				<TextInput style={Style.inputText} value={this.state.listName} onChangeText={(text) => this.setState({listName: text})} autoFocus={true} placeholder='Nom de la liste' maxLength={20}/>
+				<TextInput
+				style={Style.inputText}
+				value={this.state.listName}
+				onChangeText={(text) => this.setState({listName: text})}
+				autoFocus={true}
+				placeholder='Nom de la liste'
+				maxLength={25}/>
 				<TouchableOpacity
 				activeOpacity={0.7} 
 				style={Style.button}

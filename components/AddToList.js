@@ -29,7 +29,7 @@ export default class AddToList extends React.Component {
 			if (value !== null)
 				return (value);
 			else {
-				return ('{"'+item+'":[]}');
+				return ('{"lists":[],"nextId":1,"favorites":[]}');
 			}
 		}
 		catch (error) {
@@ -41,7 +41,7 @@ export default class AddToList extends React.Component {
 		this.setState({
 			isReady: false
 		});
-		this.retrieveData('lists')
+		this.retrieveData('userData')
 		.then((dataString) => JSON.parse(dataString))
 		.then((dataObject) => {
 			if (dataObject.lists.length > 0) {
@@ -90,7 +90,7 @@ export default class AddToList extends React.Component {
 				posterPath: this.props.navigation.state.params.posterPath
 			});
 			data = JSON.stringify(data);
-			this.storeData('lists', data)
+			this.storeData('userData', data)
 			.then(() => this.props.navigation.navigate('Find'))
 			.catch(() => alert('Impossible d\'ajouter le film'));
 		}
