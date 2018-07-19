@@ -31,7 +31,7 @@ class Result extends React.Component {
 			data={this.props.movieData}
 			renderItem={ ({item}) => (
 				<TouchableOpacity
-				onPress={ () => this.props.navigation.navigate('MovieInfos', { movieId: item.id })} //!\\
+				onPress={ () => this.props.navigation.navigate('MovieInfos', { movieId: item.id, from: 'search' })}
 				activeOpacity={0.7}
 				>
 					<View style={Style.results.container} >
@@ -103,7 +103,7 @@ export default class Search extends React.Component {
 			console.log(error);
 		});
 	}
-
+//Revoir /!\
 	render () {
 		return (
 			<View style={Style.globalContainer} >

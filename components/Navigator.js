@@ -8,7 +8,7 @@ import Settings from './Settings.js'
 import Style from '../style/Style.js'
 
 export default createMaterialBottomTabNavigator({
-	Search: {screen: StackNavigatorSearch,
+	SearchScreen: {screen: StackNavigatorSearch,
 		navigationOptions: {
 			tabBarLabel: 'Rechercher',
 			tabBarIcon: ({ tintColor })=>(
@@ -16,7 +16,7 @@ export default createMaterialBottomTabNavigator({
 			)
 		}
 	},
-	Home: {screen: StackNavigatorHome,
+	HomeScreen: {screen: StackNavigatorHome,
 		navigationOptions: {
 			tabBarLabel: 'Acceuil',
 			tabBarIcon: ({ tintColor }) =>(
@@ -24,7 +24,7 @@ export default createMaterialBottomTabNavigator({
 			)
 		}
 	},
-	Settings: {screen: Settings,
+	SettingsScreen: {screen: Settings,
 		navigationOptions: {
 			tabBarLabel: 'Paramètres',
 			tabBarIcon: ({ tintColor })=>(
@@ -33,7 +33,7 @@ export default createMaterialBottomTabNavigator({
 		}
 	}
 }, {
-	initialRouteName: 'Home',
+	initialRouteName: 'HomeScreen',
 	activeTintColor: 'white',
 	shifting: true,
 	barStyle: Style.navigation

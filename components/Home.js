@@ -29,7 +29,7 @@ export default class Home extends React.Component {
 			if (value !== null)
 				return (value);
 			else {
-				return ('{"'+item+'":[]}');
+				return ('{"'+item+'":[],"nextId":1}');
 			}
 		}
 		catch (error) {
@@ -47,7 +47,7 @@ export default class Home extends React.Component {
 			if (dataObject.lists.length > 0) {
 				this.setState({
 					isReady: true,
-					dataLists: dataObject.lists.reverse()
+					dataLists: dataObject.lists
 				});
 				return ;
 			}
@@ -56,11 +56,11 @@ export default class Home extends React.Component {
 				dataLists: null
 			});
 		})
-		.catch((error) => alert('Impossible de charger les listes'));
+		.catch(() => alert('Impossible de charger les listes'));
 	}
 
 	componentDidMount () {
-		this.getLists ();
+		this.props.navigation.addListener('willFocus', () => this.getLists ());
 	}
 
 	delList (listId) {
@@ -80,7 +80,7 @@ export default class Home extends React.Component {
 				} }
 				]);
 		})
-		.catch((error) => alert('Impossible de supprimmer cette liste'));
+		.catch(() => alert('Impossible de supprimmer cette liste'));
 	}
 
 	render () {
@@ -90,11 +90,13 @@ export default class Home extends React.Component {
 					<TouchableOpacity
 					activeOpacity={0.7}
 					style={Style.button}
-					onPress={() => this.props.navigation.navigate('CreateList', { refresh: this.getLists.bind(this) })}
+					onPress={() => this.props.navigation.navigate('CreateList')}
 					>
 						<Text style={Style.buttonText} >Nouvelle liste</Text>
 					</TouchableOpacity>
 					<FlatList
+					showsHorizontalScrollIndicator={false}
+					showsVerticalScrollIndicator={false}
 					style={Style.listsHome.flatList}
 					data={this.state.dataLists}
 					renderItem={({item}) => (

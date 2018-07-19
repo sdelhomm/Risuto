@@ -6,6 +6,7 @@ let red = '#d81326';
 let dark = '#3B3B3B';
 let light = '#f7f7f7';
 let redDel = '#ef0911';
+let disabled = '#bfbfbf';
 
 export default Style = {
 	bottomBar: {
@@ -41,6 +42,17 @@ export default Style = {
 		borderWidth: 2,
 		backgroundColor: redCarpet,
 		borderColor: red,
+		borderRadius: 3,
+		alignItems: 'center',
+		justifyContent: 'center'
+	},
+	buttonDisabled: {
+		width: '90%',
+		padding: 6,
+		marginVertical: 20,
+		borderWidth: 2,
+		backgroundColor: disabled,
+		borderColor: '#afafaf',
 		borderRadius: 3,
 		alignItems: 'center',
 		justifyContent: 'center'
@@ -193,9 +205,17 @@ export default Style = {
 			alignItems: 'center',
 			justifyContent: 'center'
 		},
+		moviesView: {
+			flex: 1,
+			width: '100%',
+			justifyContent: 'center',
+			flexDirection: 'row',
+			flexWrap: 'wrap'
+		},
 		movies: {
 			width: 120,
-			height: 180
+			height: 180,
+			margin: 10
 		},
 	},
 	AddToList : {

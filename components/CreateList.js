@@ -44,18 +44,14 @@ export default class CreateList extends React.Component {
 				let newList = {
 					id: data.nextId,
 					name: name,
-					movies: [{
-						id: 0,
-						posterPath: '/z13I3sWzOoKBDAEpJ7iK9bSznQn.jpg'
-					}]
+					movies: []
 				};
-				data.lists.push(newList);
+				data.lists.unshift(newList);
 				data.nextId++;
 				data = JSON.stringify(data);
 				this.storeData('lists', data);
 			})
 			.then(() => {
-				this.props.navigation.state.params.refresh();
 				this.props.navigation.navigate('Home');
 			})
 			.catch(() => alert('Impossible d\'enregistrer la liste'));

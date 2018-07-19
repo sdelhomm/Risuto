@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, View, Text, Image, ImageBackground, ActivityIndicator, TouchableOpacity } from 'react-native'
+import { ScrollView, View, Text, Image, ImageBackground, ActivityIndicator, TouchableOpacity, AsyncStorage } from 'react-native'
 import Style from '../style/Style.js'
 
 export default class MovieInfos extends React.Component {
@@ -38,6 +38,64 @@ export default class MovieInfos extends React.Component {
 		});
 	}
 
+	storeData = async (item, value) => {
+		try {
+			await AsyncStorage.setItem(item, value);
+		}
+		catch (error) {
+			console.log(error);
+		}
+	}
+
+	retrieveData = async (item) => {
+		try {
+			const value = await AsyncStorage.getItem(item);
+			if (value !== null)
+				return (value);
+			else {
+				return ('{"'+item+'":[],"nextId":1}');
+			}
+		}
+		catch (error) {
+			console.log(error);
+		}
+	}
+
+	delMovie (movieId, listId) {
+		this.retrieveData('lists')
+		.then((dataString) => JSON.parse(dataString))
+		.then((dataObject) => {
+			let listIndex = dataObject.lists.findIndex((element) => element.id == listId);
+			let movieIndex = dataObject.lists[listIndex].movies.findIndex((element) => element.id == movieId);
+			dataObject.lists[listIndex].movies.splice(movieIndex, 1);
+			dataObject = JSON.stringify(dataObject);
+			this.storeData('lists', dataObject);
+		})
+		.then(() => this.props.navigation.navigate('Home'))
+		.catch(() => alert('Impossible de supprimer ce film'));
+	}
+
+	createButton () {
+		if (this.props.navigation.state.params.from == 'list') {
+			return (
+				<TouchableOpacity
+				onPress={() => this.delMovie (this.state.movieData.id, this.props.navigation.state.params.listId)}
+				activeOpacity={0.7}
+				style={Style.button} >
+					<Text style={Style.buttonText} >Supprimer de cette liste</Text>
+				</TouchableOpacity>
+			);
+		}
+		return (
+			<TouchableOpacity
+			onPress={() => this.props.navigation.navigate('AddToList', {movieId: this.state.movieData.id, posterPath: this.state.movieData.poster_path})}
+			activeOpacity={0.7}
+			style={Style.button} >
+				<Text style={Style.buttonText} >Ajouter à une liste</Text>
+			</TouchableOpacity>
+		);
+	}
+
 	render () {
 		if (!this.state.isReady)
 			return (<View style={Style.movieInfos.globalView} >
@@ -61,9 +119,7 @@ export default class MovieInfos extends React.Component {
 						source={{uri: 'http://image.tmdb.org/t/p/w780' + this.state.movieData.backdrop_path}}
 						/>
 						<Text style={Style.movieInfos.title} >{this.state.movieData.title}</Text>
-						<TouchableOpacity activeOpacity={0.7} style={Style.button} >
-							<Text style={Style.buttonText} >Ajouter à une liste</Text>
-						</TouchableOpacity>
+						{this.createButton()}
 						<Text style={Style.movieInfos.overview} >{this.state.movieData.overview}</Text>
 					</View>
 				</ScrollView>
