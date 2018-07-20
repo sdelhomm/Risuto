@@ -1,10 +1,10 @@
-import React from 'react'
-import { } from 'react-native'
-import Home from './Home.js'
-import CreateList from './CreateList.js'
-import ListManager from './ListManager.js'
-import MovieInfos from './MovieInfos.js'
-import { createStackNavigator } from 'react-navigation'
+import React from 'react';
+import { } from 'react-native';
+import Home from './Home.js';
+import CreateList from './CreateList.js';
+import ListManager from './ListManager.js';
+import MovieInfos from './MovieInfos.js';
+import {createStackNavigator} from 'react-navigation';
 
 export default createStackNavigator({
 	Home: {
@@ -17,7 +17,8 @@ export default createStackNavigator({
 		screen: CreateList,
 		navigationOptions: {
 			headerStyle: {
-				backgroundColor: '#c60f22'
+				backgroundColor: '#c60f22',
+				borderBottomWidth: 0
 			},
 			headerTintColor: '#ffffff'
 		}
@@ -26,7 +27,8 @@ export default createStackNavigator({
 		screen: ListManager,
 		navigationOptions: {
 			headerStyle: {
-				backgroundColor: '#c60f22'
+				backgroundColor: '#c60f22',
+				borderBottomWidth: 0
 			},
 			headerTintColor: '#ffffff'
 		}
@@ -35,9 +37,14 @@ export default createStackNavigator({
 		screen: MovieInfos,
 		navigationOptions: {
 			headerStyle: {
-				backgroundColor: '#c60f22'
+				backgroundColor: '#c60f22',
+				borderBottomWidth: 0
 			},
 			headerTintColor: '#ffffff'
 		}
 	}
-});
+},
+																																				{
+																																					initialRouteName: 'Home',
+																																					cardStyle: {backgroundColor: 'transparent'}
+																																				});

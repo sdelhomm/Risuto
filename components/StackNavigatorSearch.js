@@ -1,9 +1,9 @@
-import React from 'react'
-import { } from 'react-native'
-import Search from './Search.js'
-import MovieInfos from './MovieInfos.js'
-import AddToList from './AddToList.js'
-import { createStackNavigator } from 'react-navigation'
+import React from 'react';
+import { } from 'react-native';
+import Search from './Search.js';
+import MovieInfos from './MovieInfos.js';
+import AddToList from './AddToList.js';
+import {createStackNavigator} from 'react-navigation';
 
 export default createStackNavigator({
 	Find: {
@@ -16,18 +16,24 @@ export default createStackNavigator({
 		screen: MovieInfos,
 		navigationOptions: {
 			headerStyle: {
-				backgroundColor: '#c60f22'
+				backgroundColor: '#c60f22',
+				borderBottomWidth: 0
 			},
 			headerTintColor: '#ffffff'
 		}
 	},
-	AddToList:{
+	AddToList: {
 		screen: AddToList,
 		navigationOptions: {
 			headerStyle: {
-				backgroundColor: '#c60f22'
+				backgroundColor: '#c60f22',
+				borderBottomWidth: 0
 			},
 			headerTintColor: '#ffffff'
 		}
 	}
-});
+},
+																																				{
+																																					initialRouteName: 'Find',
+																																					cardStyle: {backgroundColor: 'transparent'}
+																																				});

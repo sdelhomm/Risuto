@@ -1,84 +1,77 @@
-import React from 'react'
-import { View, Text, TextInput, TouchableOpacity, AsyncStorage } from 'react-native'
-import Style from '../style/Style.js'
+import React from 'react';
+import {View, Text, TextInput, TouchableOpacity, StatusBar} from 'react-native';
+import {storeData, retrieveData, getStyleSheet} from './DataManager.js';
 
-export default class CreateList extends React.Component {
-
-	constructor(props) {
+export default class CreateList extends React.Component
+{
+	constructor(props)
+	{
 	  super(props);
-	
+
 	  this.state = {
-	  	listName: ''
+	  	listName: '',
+	  	Style: null
 	  };
 	}
 
-	storeData = async (item, value) => {
-		try {
-			await AsyncStorage.setItem(item, value);
-		}
-		catch (error) {
-			console.log(error);
-		}
-	}
-
-	retrieveData = async (item) => {
-		try {
-			const value = await AsyncStorage.getItem(item);
-			if (value !== null)
-				return (value);
-			else {
-				return ('{"lists":[],"nextId":1,"favorites":[]}');
-			}
-		}
-		catch (error) {
-			console.log(error);
-		}
-	}
-
-	saveList() {
-		let name = this.state.listName;
-		if (name !== undefined && name !== null && name.length > 0) {
-			this.retrieveData('userData')
-			.then((data) => {
+	saveList()
+	{
+		const name = this.state.listName;
+		if (name !== undefined && name !== null && name.length > 0)
+		{
+			retrieveData('userData')
+			.then((data) =>
+			{
 				data = JSON.parse(data);
-				let newList = {
+				const newList = {
 					id: data.nextId,
-					name: name,
+					name,
 					movies: []
 				};
 				data.lists.unshift(newList);
 				data.nextId++;
 				data = JSON.stringify(data);
-				this.storeData('userData', data);
+				storeData('userData', data);
 			})
-			.then(() => {
+			.then(() =>
+			{
 				this.props.navigation.navigate('Home');
 			})
 			.catch(() => alert('Impossible d\'enregistrer la liste'));
 		}
-		else {
+		else
+
 			alert('Merci d\'entrer un nom valide');
-		}
 	}
 
-	render () {
+	componentDidMount()
+	{
+		this.props.navigation.addListener('willFocus', () => getStyleSheet().then(Style => this.setState({Style})));
+	}
+
+	render()
+	{
+		if (this.state.Style === null)
+			return (null);
 		return (
-			<View style={Style.globalContainer} >
+			<View style={this.state.Style.globalContainer} >
+				{this.state.Style.statusBar}
 				<TextInput
-				style={Style.inputText}
-				value={this.state.listName}
-				onChangeText={(text) => this.setState({listName: text})}
-				autoFocus={true}
-				placeholder='Nom de la liste'
-				maxLength={25}/>
+					style={this.state.Style.inputText}
+					value={this.state.listName}
+					onChangeText={text => this.setState({listName: text})}
+					autoFocus
+					placeholder='Nom de la liste'
+					maxLength={25}
+					keyboardAppearance={this.state.Style.theme}
+					autoCorrect={false} />
 				<TouchableOpacity
-				activeOpacity={0.7} 
-				style={Style.button}
-				onPress={() => this.saveList()}
-				>
-					<Text style={Style.buttonText} >Créer</Text>
+					activeOpacity={0.7}
+					style={this.state.Style.button}
+					onPress={() => this.saveList()}>
+					<Text style={this.state.Style.buttonText} >Créer</Text>
 				</TouchableOpacity>
 			</View>
-			);
+		);
 	}
 }
