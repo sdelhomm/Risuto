@@ -1,6 +1,5 @@
 import React from 'react';
-import {StyleSheet, AsyncStorage, StatusBar} from 'react-native';
-import {storeData, retrieveData} from '../components/DataManager.js';
+import {StatusBar, Platform} from 'react-native';
 
 const redCarpet = '#c60f22';
 const red = '#d81326';
@@ -17,7 +16,7 @@ export const StyleLight = {
 	},
 	globalContainer: {
 		flex: 1,
-		padding: 10,
+		paddingHorizontal: 10,
 		paddingTop: 30,
 		alignItems: 'center',
 		backgroundColor: lighter
@@ -31,13 +30,13 @@ export const StyleLight = {
 		fontSize: 30,
 		marginVertical: 10,
 		color: dark,
-		fontFamily: 'AvenirNext-Regular'
+		fontFamily: Platform.OS === 'ios' ? 'AvenirNext-Regular' : 'sans-serif-light'
 	},
 	bigText: {
 		fontSize: 40,
 		marginVertical: 20,
 		color: dark,
-		fontFamily: 'AvenirNext-Regular'
+		fontFamily: Platform.OS === 'ios' ? 'AvenirNext-Regular' : 'sans-serif-light'
 	},
 	button: {
 		width: '90%',
@@ -78,7 +77,6 @@ export const StyleLight = {
 			width: 2,
 			height: 2
 		},
-		backgroundColor: '#FFF',
 		shadowOpacity: 0.4,
 		shadowRadius: 2,
 		marginVertical: 15,
@@ -86,6 +84,11 @@ export const StyleLight = {
 		padding: 9,
 		color: darker,
 		backgroundColor: light
+	},
+	picker: {
+		width: '100%',
+		marginVertical: 10,
+		...Platform.select({android: {backgroundColor: '#c6c6c6'}})
 	},
 	results: {
 		flatList: {
@@ -106,7 +109,7 @@ export const StyleLight = {
 			fontSize: 20,
 			textAlign: 'center',
 			marginVertical: 10,
-			fontFamily: 'HelveticaNeue',
+			fontFamily: Platform.OS === 'ios' ? 'HelveticaNeue' : 'Roboto',
 			color: dark
 		},
 		image: {
@@ -129,7 +132,7 @@ export const StyleLight = {
 			textAlign: 'justify',
 			fontStyle: 'italic',
 			color: dark,
-			fontFamily: 'Arial'
+			fontFamily: Platform.OS === 'ios' ? 'HelveticaNeue' : 'Roboto'
 		},
 		textContainer: {
 			height: '100%',
@@ -140,7 +143,7 @@ export const StyleLight = {
 			color: dark,
 			fontSize: 18,
 			marginVertical: 15,
-			fontFamily: 'HelveticaNeue'
+			fontFamily: Platform.OS === 'ios' ? 'HelveticaNeue' : 'Roboto'
 		}
 	},
 	movieInfos: {
@@ -162,7 +165,7 @@ export const StyleLight = {
 			textAlign: 'center',
 			color: light,
 			marginVertical: 13,
-			fontFamily: 'AvenirNext-Regular'
+			fontFamily: Platform.OS === 'ios' ? 'AvenirNext-Regular' : 'sans-serif-light'
 		},
 		voteSection: {
 			flex: 1,
@@ -180,7 +183,7 @@ export const StyleLight = {
 			flexWrap: 'wrap'
 		},
 		overview: {
-			fontFamily: 'Helvetica',
+			fontFamily: Platform.OS === 'ios' ? 'Helvetica' : 'sans-serif',
 			fontSize: 18,
 			fontStyle: 'italic',
 			color: light,
@@ -207,7 +210,7 @@ export const StyleLight = {
 		infos: {
 			color: light,
 			fontSize: 16,
-			fontFamily: 'Helvetica',
+			fontFamily: Platform.OS === 'ios' ? 'Helvetica' : 'sans-serif',
 			marginVertical: 5
 		}
 	},
@@ -228,7 +231,7 @@ export const StyleLight = {
 		},
 		name: {
 			fontSize: 20,
-			fontFamily: 'HelveticaNeue',
+			fontFamily: Platform.OS === 'ios' ? 'HelveticaNeue' : 'Roboto',
 			textAlign: 'center',
 			color: dark,
 			margin: 25
@@ -282,8 +285,19 @@ export const StyleLight = {
 		shadowOpacity: 0.5,
 		shadowRadius: 2
 	},
+	margin: {
+		marginVertical: 30
+	},
+	imageBackground: {
+		width: '100%',
+		height: '100%'
+	},
 	statusBar: <StatusBar barStyle='dark-content' />,
-	theme: 'light'
+	theme: 'light',
+	unTheme: 'dark',
+	main: {
+		color: dark
+	}
 };
 
 export const StyleDark = {
@@ -292,7 +306,7 @@ export const StyleDark = {
 	},
 	globalContainer: {
 		flex: 1,
-		padding: 10,
+		paddingHorizontal: 10,
 		paddingTop: 30,
 		alignItems: 'center',
 		backgroundColor: darker
@@ -306,13 +320,13 @@ export const StyleDark = {
 		fontSize: 30,
 		marginVertical: 10,
 		color: light,
-		fontFamily: 'AvenirNext-Regular'
+		fontFamily: Platform.OS === 'ios' ? 'AvenirNext-Regular' : 'sans-serif-light'
 	},
 	bigText: {
 		fontSize: 40,
 		marginVertical: 20,
 		color: light,
-		fontFamily: 'AvenirNext-Regular'
+		fontFamily: Platform.OS === 'ios' ? 'AvenirNext-Regular' : 'sans-serif-light'
 	},
 	button: {
 		width: '90%',
@@ -353,7 +367,6 @@ export const StyleDark = {
 			width: 2,
 			height: 2
 		},
-		backgroundColor: '#FFF',
 		shadowOpacity: 0.4,
 		shadowRadius: 2,
 		marginVertical: 15,
@@ -361,6 +374,11 @@ export const StyleDark = {
 		padding: 9,
 		color: lighter,
 		backgroundColor: dark
+	},
+	picker: {
+		width: '100%',
+		marginVertical: 10,
+		...Platform.select({android: {backgroundColor: '#606060'}})
 	},
 	results: {
 		flatList: {
@@ -381,7 +399,7 @@ export const StyleDark = {
 			fontSize: 20,
 			textAlign: 'center',
 			marginVertical: 10,
-			fontFamily: 'HelveticaNeue',
+			fontFamily: Platform.OS === 'ios' ? 'HelveticaNeue' : 'Roboto',
 			color: light
 		},
 		image: {
@@ -404,7 +422,7 @@ export const StyleDark = {
 			textAlign: 'justify',
 			fontStyle: 'italic',
 			color: light,
-			fontFamily: 'Arial'
+			fontFamily: Platform.OS === 'ios' ? 'HelveticaNeue' : 'Roboto'
 		},
 		textContainer: {
 			height: '100%',
@@ -415,7 +433,7 @@ export const StyleDark = {
 			color: light,
 			fontSize: 18,
 			marginVertical: 15,
-			fontFamily: 'HelveticaNeue'
+			fontFamily: Platform.OS === 'ios' ? 'HelveticaNeue' : 'Roboto'
 		}
 	},
 	movieInfos: {
@@ -437,7 +455,7 @@ export const StyleDark = {
 			textAlign: 'center',
 			color: light,
 			marginVertical: 13,
-			fontFamily: 'AvenirNext-Regular'
+			fontFamily: Platform.OS === 'ios' ? 'AvenirNext-Regular' : 'sans-serif-light'
 		},
 		voteSection: {
 			flex: 1,
@@ -455,7 +473,7 @@ export const StyleDark = {
 			flexWrap: 'wrap'
 		},
 		overview: {
-			fontFamily: 'Helvetica',
+			fontFamily: Platform.OS === 'ios' ? 'Helvetica' : 'sans-serif',
 			fontSize: 18,
 			fontStyle: 'italic',
 			color: light,
@@ -482,7 +500,7 @@ export const StyleDark = {
 		infos: {
 			color: light,
 			fontSize: 16,
-			fontFamily: 'Helvetica',
+			fontFamily: Platform.OS === 'ios' ? 'Helvetica' : 'sans-serif',
 			marginVertical: 5
 		}
 	},
@@ -503,7 +521,7 @@ export const StyleDark = {
 		},
 		name: {
 			fontSize: 20,
-			fontFamily: 'HelveticaNeue',
+			fontFamily: Platform.OS === 'ios' ? 'HelveticaNeue' : 'Roboto',
 			textAlign: 'center',
 			color: light,
 			margin: 25
@@ -557,6 +575,17 @@ export const StyleDark = {
 		shadowOpacity: 0.5,
 		shadowRadius: 2
 	},
+	margin: {
+		marginVertical: 25
+	},
+	imageBackground: {
+		width: '100%',
+		height: '100%'
+	},
 	statusBar: <StatusBar barStyle='light-content' />,
-	theme: 'dark'
+	theme: 'dark',
+	unTheme: 'light',
+	main: {
+		color: light
+	}
 };

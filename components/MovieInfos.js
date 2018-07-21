@@ -1,5 +1,13 @@
 import React from 'react';
-import {ScrollView, View, Text, Image, ImageBackground, ActivityIndicator, TouchableOpacity, StatusBar} from 'react-native';
+import {ScrollView,
+	View,
+	Text,
+	Image,
+	ImageBackground,
+	ActivityIndicator,
+	TouchableOpacity,
+	StatusBar,
+	Alert} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons.js';
 import {storeData, retrieveData} from './DataManager.js';
 import {StyleLight} from '../style/Style.js';
@@ -8,18 +16,17 @@ export default class MovieInfos extends React.Component
 {
 	constructor(props)
 	{
-	  super(props);
+		super(props);
 
-	  this.state = {
-	  	isReady: true,
-	  	movieData: null,
-	  	userData: null,
-	  	liked: null,
-	  	date: null
-	  };
+		this.state = {
+			isReady: true,
+			movieData: null,
+			userData: null,
+			date: null
+		};
 	}
 
-	componentDidMount()
+	fetchInfos()
 	{
 		this.setState({
 			isReady: false
@@ -56,12 +63,17 @@ export default class MovieInfos extends React.Component
 		});
 	}
 
+	componentDidMount()
+	{
+		this.fetchInfos();
+	}
+
 	delMovie(movieId, listId)
 	{
 		try
 		{
-			const listIndex = this.state.userData.lists.findIndex(element => element.id == listId);
-			const movieIndex = this.state.userData.lists[listIndex].movies.findIndex(element => element.id == movieId);
+			const listIndex = this.state.userData.lists.findIndex(element => element.id === listId);
+			const movieIndex = this.state.userData.lists[listIndex].movies.findIndex(element => element.id === movieId);
 			this.state.userData.lists[listIndex].movies.splice(movieIndex, 1);
 			this.state.userData = JSON.stringify(this.state.userData);
 			storeData('userData', this.state.userData)
@@ -70,13 +82,13 @@ export default class MovieInfos extends React.Component
 		catch (error)
 		{
 			console.log(error);
-			alert('Impossible de supprimer ce film');
+			Alert.alert('Impossible de supprimer ce film');
 		}
 	}
 
 	createButton()
 	{
-		if (this.props.navigation.state.params.from == 'list')
+		if (this.props.navigation.state.params.from === 'list')
 		{
 			return (
 				<TouchableOpacity
@@ -99,8 +111,8 @@ export default class MovieInfos extends React.Component
 
 	doLike()
 	{
-		const index = this.state.userData.favorites.findIndex(element => element == this.state.movieData.id);
-		if (index == -1)
+		const index = this.state.userData.favorites.findIndex(element => element === this.state.movieData.id);
+		if (index === -1)
 		{
 			this.state.userData.favorites.push(this.state.movieData.id);
 			this.state.userData = JSON.stringify(this.state.userData);
@@ -150,7 +162,7 @@ export default class MovieInfos extends React.Component
 
 	likeButton()
 	{
-		if (this.state.userData.favorites.findIndex(element => element == this.state.movieData.id) != -1)
+		if (this.state.userData.favorites.findIndex(element => element === this.state.movieData.id) !== -1)
 		{
 			return (
 				<TouchableOpacity
@@ -219,25 +231,24 @@ export default class MovieInfos extends React.Component
 
 	render()
 	{
+		StatusBar.setBarStyle('light-content');
 		if (!this.state.isReady)
 		{
 			return (
 				<View style={StyleLight.movieInfos.globalView} >
-					<StatusBar barStyle='light-content' />
 					<ActivityIndicator size='large' />
 				</View>
 			);
 		}
 		if (this.state.movieData === undefined || this.state.movieData === null)
 			return (null);
-		if (this.state.movieData == 'none')
-			return (<Text style={{marginVertical: 50}} >Aucunes données trouvées</Text>);
+		if (this.state.movieData === 'none')
+			return (<Text style={StyleLight.margin} >Aucunes données trouvées</Text>);
 		return (
 			<ImageBackground
-				style={{width: '100%', height: '100%'}}
+				style={StyleLight.imageBackground}
 				source={{uri: `http://image.tmdb.org/t/p/w780${this.state.movieData.poster_path}`}}
 				blurRadius={10}>
-				<StatusBar barStyle='light-content' />
 				<ScrollView style={StyleLight.movieInfos.scrollView} >
 					<View style={StyleLight.movieInfos.globalView} >
 						<Image

@@ -1,5 +1,12 @@
 import React from 'react';
-import {View, Text, Image, Picker, TouchableOpacity, ActivityIndicator, StatusBar} from 'react-native';
+import {View,
+	Text,
+	Image,
+	Picker,
+	TouchableOpacity,
+	ActivityIndicator,
+	Alert,
+	StatusBar} from 'react-native';
 import {storeData, retrieveData, getStyleSheet} from './DataManager.js';
 
 export default class AddToList extends React.Component
@@ -39,12 +46,12 @@ export default class AddToList extends React.Component
 				dataLists: null
 			});
 		})
-		.catch(error => alert('Impossible de charger les listes'));
+		.catch(() => Alert.alert('Impossible de charger les listes'));
 	}
 
 	componentDidMount()
 	{
-		this.props.navigation.addListener('willFocus', () => getStyleSheet().then(Style => this.setState({Style})));
+		this.props.navigation.addListener('willFocus', () => getStyleSheet().then(Styles => this.setState({Style: Styles})));
 		this.getLists();
 	}
 
@@ -54,7 +61,7 @@ export default class AddToList extends React.Component
 		{
 			const galery = this.state.dataLists.map((item, key) =>
 			{
-				if (item.movies.find(element => element.id == this.props.navigation.state.params.movieId) === undefined)
+				if (item.movies.find(element => element.id === this.props.navigation.state.params.movieId) === undefined)
 				{
 					return (
 						<Picker.Item
@@ -74,7 +81,7 @@ export default class AddToList extends React.Component
 		if (this.state.selectedList !== null)
 		{
 			let data = this.state.dataObject;
-			const index = data.lists.findIndex(element => element.id == this.state.selectedList);
+			const index = data.lists.findIndex(element => element.id === this.state.selectedList);
 			data.lists[index].movies.push({
 				id: this.props.navigation.state.params.movieId,
 				posterPath: this.props.navigation.state.params.posterPath
@@ -82,11 +89,11 @@ export default class AddToList extends React.Component
 			data = JSON.stringify(data);
 			storeData('userData', data)
 			.then(() => this.props.navigation.navigate('Find'))
-			.catch(() => alert('Impossible d\'ajouter le film'));
+			.catch(() => Alert.alert('Impossible d\'ajouter le film'));
 		}
 		else
 
-			alert('Merci de sélectionner une liste');
+			Alert.alert('Merci de sélectionner une liste');
 	}
 
 	addButton()
@@ -116,19 +123,21 @@ export default class AddToList extends React.Component
 	render()
 	{
 		if (this.state.Style === null)
+		{
+			getStyleSheet().then(Styles => this.setState({Style: Styles}));
 			return (null);
+		}
+		StatusBar.setBarStyle(`${this.state.Style.unTheme}-content`);
 		if (!this.state.isReady)
 		{
 			return (
 				<View style={this.state.Style.movieInfos.globalView} >
-					{this.state.Style.statusBar}
 					<ActivityIndicator size='large' />
 				</View>
 			);
 		}
 		return (
 			<View style={this.state.Style.globalContainer} >
-				{this.state.Style.statusBar}
 				<View style={this.state.Style.shadow} >
 					<Image
 						style={this.state.Style.AddToList.image}
@@ -136,7 +145,9 @@ export default class AddToList extends React.Component
 				</View>
 				<Picker
 					selectedValue={this.state.selectedList}
-					style={{width: '100%', marginVertical: 10}}
+					itemStyle={this.state.Style.main}
+					mode='dropdown'
+					style={this.state.Style.picker}
 					onValueChange={itemValue => this.setState({selectedList: itemValue})}>
 					<Picker.Item label='Choisir une liste' value={null} />
 					{this.getPickers()}

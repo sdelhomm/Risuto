@@ -1,17 +1,22 @@
 import React from 'react';
-import {View, Text, TextInput, TouchableOpacity, StatusBar} from 'react-native';
+import {View,
+	Text,
+	TextInput,
+	TouchableOpacity,
+	Alert,
+	StatusBar} from 'react-native';
 import {storeData, retrieveData, getStyleSheet} from './DataManager.js';
 
 export default class CreateList extends React.Component
 {
 	constructor(props)
 	{
-	  super(props);
+		super(props);
 
-	  this.state = {
-	  	listName: '',
-	  	Style: null
-	  };
+		this.state = {
+			listName: '',
+			Style: null
+		};
 	}
 
 	saveList()
@@ -29,7 +34,7 @@ export default class CreateList extends React.Component
 					movies: []
 				};
 				data.lists.unshift(newList);
-				data.nextId++;
+				data.nextId += 1;
 				data = JSON.stringify(data);
 				storeData('userData', data);
 			})
@@ -37,26 +42,30 @@ export default class CreateList extends React.Component
 			{
 				this.props.navigation.navigate('Home');
 			})
-			.catch(() => alert('Impossible d\'enregistrer la liste'));
+			.catch(() => Alert.alert('Impossible d\'enregistrer la liste'));
 		}
 		else
 
-			alert('Merci d\'entrer un nom valide');
+			Alert.alert('Merci d\'entrer un nom valide');
 	}
 
 	componentDidMount()
 	{
-		this.props.navigation.addListener('willFocus', () => getStyleSheet().then(Style => this.setState({Style})));
+		this.props.navigation.addListener('willFocus', () => getStyleSheet().then(Styles => this.setState({Style: Styles})));
 	}
 
 	render()
 	{
 		if (this.state.Style === null)
+		{
+			getStyleSheet().then(Styles => this.setState({Style: Styles}));
 			return (null);
+		}
+		StatusBar.setBarStyle(`${this.state.Style.unTheme}-content`);
 		return (
 			<View style={this.state.Style.globalContainer} >
-				{this.state.Style.statusBar}
 				<TextInput
+					underlineColorAndroid='transparent'
 					style={this.state.Style.inputText}
 					value={this.state.listName}
 					onChangeText={text => this.setState({listName: text})}

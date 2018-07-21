@@ -1,24 +1,26 @@
 import React from 'react';
-import {View, Text, Switch, ActivityIndicator, StatusBar} from 'react-native';
+import {View,
+	Text, Switch,
+	ActivityIndicator,
+	StatusBar} from 'react-native';
 import {storeData, retrieveData, getStyleSheet} from './DataManager.js';
 
 export default class Settings extends React.Component
 {
 	constructor(props)
 	{
-	  super(props);
+		super(props);
 
-	  this.state = {
-	  	isReady: false,
-	  	userData: null,
-	  	switchBtn: false,
-	  	Style: null
-	  };
+		this.state = {
+			isReady: false,
+			userData: null,
+			switchBtn: false,
+			Style: null
+		};
 	}
 
-	componentDidMount()
+	getActualTheme()
 	{
-		this.props.navigation.addListener('willFocus', () => getStyleSheet().then(Style => this.setState({Style})));
 		retrieveData('userData')
 		.then(dataString => JSON.parse(dataString))
 		.then(dataObject =>
@@ -32,6 +34,12 @@ export default class Settings extends React.Component
 		{
 			console.log(error);
 		});
+	}
+
+	componentDidMount()
+	{
+		this.props.navigation.addListener('willFocus', () => getStyleSheet().then(Styles => this.setState({Style: Styles})));
+		this.props.navigation.addListener('willFocus', () => this.getActualTheme());
 	}
 
 	switchTheme = () =>
@@ -53,24 +61,18 @@ export default class Settings extends React.Component
 		getStyleSheet().then(Style => this.setState({Style}));
 	}
 
-	updateStatusBar()
-	{
-		if (this.state.Style.theme == 'light')
-
-			return (<StatusBar barStyle='dark-content' />);
-
-		return (<StatusBar barStyle='light-content' />);
-	}
-
 	render()
 	{
 		if (this.state.Style === null)
+		{
+			getStyleSheet().then(Styles => this.setState({Style: Styles}));
 			return (null);
+		}
+		StatusBar.setBarStyle(`${this.state.Style.unTheme}-content`);
 		if (!this.state.isReady)
 		{
 			return (
 				<View style={this.state.Style.globalContainer} >
-					{this.updateStatusBar()}
 					<View style={this.state.Style.movieInfos.globalView} >
 						<ActivityIndicator size='large' />
 					</View>
@@ -79,7 +81,6 @@ export default class Settings extends React.Component
 		}
 		return (
 			<View style={this.state.Style.globalContainer} >
-				{this.updateStatusBar()}
 				<View style={this.state.Style.movieInfos.globalView} >
 					<Text style={this.state.Style.bigText} >Mode cinéma</Text>
 					<Switch style={this.state.Style.switch} value={this.state.switchBtn} onValueChange={this.switchTheme} />

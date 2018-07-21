@@ -1,9 +1,7 @@
-import React from 'react';
-import { } from 'react-native';
+import {createStackNavigator} from 'react-navigation';
 import Search from './Search.js';
 import MovieInfos from './MovieInfos.js';
 import AddToList from './AddToList.js';
-import {createStackNavigator} from 'react-navigation';
 
 export default createStackNavigator({
 	Find: {

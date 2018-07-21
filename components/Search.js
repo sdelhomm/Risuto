@@ -1,8 +1,6 @@
 import React from 'react';
 import {View, Text, TextInput, ActivityIndicator, FlatList, Image, TouchableOpacity, StatusBar} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons.js';
-import {createStackNavigator} from 'react-navigation';
-import MovieInfos from './MovieInfos.js';
 import {getStyleSheet} from './DataManager.js';
 
 class Result extends React.Component
@@ -21,10 +19,10 @@ class Result extends React.Component
 	render()
 	{
 		if (this.props.loading)
-			return (<ActivityIndicator style={{marginVertical: 20}} size='large' />);
+			return (<ActivityIndicator style={this.props.Style.margin} size='large' />);
 		if (this.props.movieData === undefined || this.props.movieData === null)
 			return (null);
-		if (this.props.movieData == 'none')
+		if (this.props.movieData === 'none')
 			return (<Text style={this.props.Style.results.noResults} >Aucun résultats trouvés</Text>);
 		return (
 			<FlatList
@@ -64,13 +62,13 @@ export default class Search extends React.Component
 {
 	constructor(props)
 	{
-	  super(props);
+		super(props);
 
-	  this.state = {
-	  	isReady: true,
-	  	dataSource: null,
-	  	Style: null
-	  };
+		this.state = {
+			isReady: true,
+			dataSource: null,
+			Style: null
+		};
 	}
 
 	fetchMovie(text)
@@ -113,18 +111,22 @@ export default class Search extends React.Component
 
 	componentDidMount()
 	{
-		this.props.navigation.addListener('willFocus', () => getStyleSheet().then(Style => this.setState({Style})));
+		this.props.navigation.addListener('willFocus', () => getStyleSheet().then(Styles => this.setState({Style: Styles})));
 	}
 
 	render()
 	{
 		if (this.state.Style === null)
+		{
+			getStyleSheet().then(Styles => this.setState({Style: Styles}));
 			return (null);
+		}
+		StatusBar.setBarStyle(`${this.state.Style.unTheme}-content`);
 		return (
 			<View style={this.state.Style.globalContainer} >
-				{this.state.Style.statusBar}
 				<Text style={this.state.Style.title} >Rechercher un film</Text>
 				<TextInput
+					underlineColorAndroid='transparent'
 					onChangeText={(text) => {this.fetchMovie(text);}}
 					autoFocus
 					style={this.state.Style.inputText}

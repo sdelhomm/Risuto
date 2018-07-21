@@ -1,5 +1,11 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, FlatList, ActivityIndicator, Alert, StatusBar} from 'react-native';
+import {View,
+	Text,
+	TouchableOpacity,
+	FlatList,
+	ActivityIndicator,
+	Alert,
+	StatusBar} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons.js';
 import {storeData, retrieveData, getStyleSheet} from './DataManager.js';
 
@@ -9,11 +15,11 @@ export default class Home extends React.Component
 	{
 		super(props);
 
-	 	this.state = {
-	 		isReady: true,
-	 		dataLists: null,
-	 		Style: null
-	 	};
+		this.state = {
+			isReady: true,
+			dataLists: null,
+			Style: null
+		};
 	}
 
 	textLimiter(text, max)
@@ -49,12 +55,12 @@ export default class Home extends React.Component
 				dataLists: null
 			});
 		})
-		.catch(() => alert('Impossible de charger les listes'));
+		.catch(() => Alert.alert('Impossible de charger les listes'));
 	}
 
 	componentDidMount()
 	{
-		this.props.navigation.addListener('willFocus', () => getStyleSheet().then(Style => this.setState({Style})));
+		this.props.navigation.addListener('willFocus', () => getStyleSheet().then(Styles => this.setState({Style: Styles})));
 		this.props.navigation.addListener('willFocus', () => this.getLists());
 	}
 
@@ -64,14 +70,13 @@ export default class Home extends React.Component
 		.then(dataString => JSON.parse(dataString))
 		.then((dataObject) =>
 		{
-			const toDel = dataObject.lists.findIndex(element => element.id == listId);
-			Alert.alert('Attention', `Voulez vous vraiment supprimmer la liste \"${dataObject.lists[toDel].name}\" ?`,
+			const toDel = dataObject.lists.findIndex(element => element.id === listId);
+			Alert.alert('Attention', `Voulez vous vraiment supprimmer la liste "${dataObject.lists[toDel].name}" ?`,
 															[
 																{text: 'Annuler', onPress: () => {}, style: 'cancel'},
 																{text: 'Supprimmer',
 																	onPress: () =>
 																	{
-																		const toDel = dataObject.lists.findIndex(element => element.id == listId);
 																		dataObject.lists.splice(toDel, 1);
 																		dataObject = JSON.stringify(dataObject);
 																		storeData('userData', dataObject)
@@ -79,18 +84,21 @@ export default class Home extends React.Component
 																	}}
 															]);
 		})
-		.catch(() => alert('Impossible de supprimmer cette liste'));
+		.catch(() => Alert.alert('Impossible de supprimmer cette liste'));
 	}
 
 	render()
 	{
 		if (this.state.Style === null)
+		{
+			getStyleSheet().then(Styles => this.setState({Style: Styles}));
 			return (null);
+		}
+		StatusBar.setBarStyle(`${this.state.Style.unTheme}-content`);
 		if (this.state.isReady)
 		{
 			return (
 				<View style={this.state.Style.globalContainer} >
-					{this.state.Style.statusBar}
 					<TouchableOpacity
 						activeOpacity={0.7}
 						style={this.state.Style.button}
@@ -123,14 +131,13 @@ export default class Home extends React.Component
 		}
 		return (
 			<View style={this.state.Style.globalContainer} >
-				{this.state.Style.statusBar}
 				<TouchableOpacity
 					activeOpacity={0.7}
 					style={this.state.Style.button}
 					onPress={() => this.props.navigation.navigate('CreateList')}>
 					<Text style={this.state.Style.buttonText} >Nouvelle liste</Text>
 				</TouchableOpacity>
-				<ActivityIndicator style={{marginVertical: 30}} size='large' />
+				<ActivityIndicator style={this.state.Style.margin} size='large' />
 			</View>
 		);
 	}

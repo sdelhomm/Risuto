@@ -1,10 +1,8 @@
-import React from 'react';
-import { } from 'react-native';
+import {createStackNavigator} from 'react-navigation';
 import Home from './Home.js';
 import CreateList from './CreateList.js';
 import ListManager from './ListManager.js';
 import MovieInfos from './MovieInfos.js';
-import {createStackNavigator} from 'react-navigation';
 
 export default createStackNavigator({
 	Home: {

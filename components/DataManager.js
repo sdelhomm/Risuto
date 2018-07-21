@@ -1,4 +1,3 @@
-import React from 'react';
 import {AsyncStorage} from 'react-native';
 import {StyleLight, StyleDark} from '../style/Style.js';
 

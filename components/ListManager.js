@@ -1,16 +1,21 @@
 import React from 'react';
-import {Text, View, ScrollView, Image, TouchableOpacity, StatusBar} from 'react-native';
+import {Text,
+	View,
+	ScrollView,
+	Image,
+	TouchableOpacity,
+	StatusBar} from 'react-native';
 import {getStyleSheet} from './DataManager.js';
 
 export default class ListManager extends React.Component
 {
 	constructor(props)
 	{
-	  super(props);
+		super(props);
 
-	  this.state = {
-	  	Style: null
-	  };
+		this.state = {
+			Style: null
+		};
 	}
 
 	listMovie(movies)
@@ -31,16 +36,19 @@ export default class ListManager extends React.Component
 
 	componentDidMount()
 	{
-		this.props.navigation.addListener('willFocus', () => getStyleSheet().then(Style => this.setState({Style})));
+		this.props.navigation.addListener('willFocus', () => getStyleSheet().then(Styles => this.setState({Style: Styles})));
 	}
 
 	render()
 	{
 		if (this.state.Style === null)
+		{
+			getStyleSheet().then(Styles => this.setState({Style: Styles}));
 			return (null);
+		}
+		StatusBar.setBarStyle(`${this.state.Style.unTheme}-content`);
 		return (
 			<View style={this.state.Style.globalContainer} >
-				{this.state.Style.statusBar}
 				<ScrollView style={this.state.Style.listManager.scrollView} >
 					<View style={this.state.Style.listManager.globalView} >
 						<Text style={this.state.Style.title} >{this.props.navigation.state.params.list.name}</Text>
